@@ -1,10 +1,11 @@
 import Appconfig from '../config.json'
 import { Box, Button, Text, TextField, Image } from '@skynexui/components'
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router'
 
 function Titulo(props) {
   const Tag = props.tag || 'h1';
+  console.log(props)
   return (
     <>
       <Tag>{props.children}</Tag>
@@ -12,7 +13,10 @@ function Titulo(props) {
         ${Tag} {
           color: ${Appconfig.theme.colors.neutrals['000']};
           font-size: 24px;
+          font-size: ${props.FontSize};
           font-weight: 600;
+          text-align: center;
+          margin-top: ${props.marginT};
         }
       `}</style>
     </>
@@ -34,6 +38,29 @@ export default function PaginaInicial() {
           boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
         }}
       >
+        <Box
+          styleSheet={{
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexDirection: {
+              xs: 'column',
+              sm: 'row',
+            },
+            width: 'auto',
+            height: 'auto',
+            borderRadius: '5px', padding: '32px', margin: '16px',
+            boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
+            backgroundColor: Appconfig.theme.colors.neutrals[700],
+          }}
+        >
+          <Image
+            styleSheet={{
+              borderRadius: '50%'
+            }}
+            src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIjQ7D9lBGLOXwahfYPF3j0q9UKiwH04kOwC_BzWP6nEQ6wHXeus5STZ8zITfybmznB_k&usqp=CAU`}
+          />
+          <Titulo tag="h2" marginT='10px' FontSize='30px'>Concord</Titulo>
+        </Box>
         <Box
           styleSheet={{
             display: 'flex',
@@ -74,7 +101,7 @@ export default function PaginaInicial() {
               fullWidth
               textFieldColors={{
                 neutral: {
-                  textColor: Appconfig.theme.colors.neutrals[777],
+                  textColor: Appconfig.theme.colors.neutrals[300],
                   mainColor: Appconfig.theme.colors.neutrals[900],
                   mainColorHighlight: Appconfig.theme.colors.primary[500],
                   backgroundColor: Appconfig.theme.colors.neutrals[800],
@@ -105,8 +132,8 @@ export default function PaginaInicial() {
               maxWidth: '200px',
               padding: '16px',
               backgroundColor: Appconfig.theme.colors.neutrals[800],
-              border: '1px solid',
-              borderColor: Appconfig.theme.colors.neutrals[999],
+              border: '2px solid',
+              borderColor: Appconfig.theme.colors.primary[700],
               borderRadius: '10px',
               flex: 1,
               minHeight: '240px',
@@ -133,30 +160,6 @@ export default function PaginaInicial() {
           </Box>
           {/* Photo Area */}
         </Box>
-        <Box
-            styleSheet={{
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexDirection: {
-                xs: 'column',
-                sm: 'row',
-              },
-              width: 'auto',
-              height: '275px',
-              borderRadius: '5px', padding: '32px', margin: '16px',
-              boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
-              backgroundColor: Appconfig.theme.colors.neutrals[700],
-            }}
-          >
-            <Image
-              styleSheet={{
-                borderRadius: '50%',
-                marginBottom: '16px',
-                marginTop: '25px'
-              }}
-              src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIjQ7D9lBGLOXwahfYPF3j0q9UKiwH04kOwC_BzWP6nEQ6wHXeus5STZ8zITfybmznB_k&usqp=CAU`}
-            />
-          </Box>
       </Box>
     </>
   );
