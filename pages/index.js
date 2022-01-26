@@ -1,34 +1,7 @@
 import Appconfig from '../config.json'
 import { Box, Button, Text, TextField, Image } from '@skynexui/components'
-
-function GlobalStyle() {
-  return (
-    <style global jsx>{`
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        list-style: none;
-      }
-      body {
-        font-family: 'Open Sans', sans-serif;
-      }
-      /* App fit Height */ 
-      html, body, #__next {
-        min-height: 100vh;
-        display: flex;
-        flex: 1;
-      }
-      #__next {
-        flex: 1;
-      }
-      #__next > * {
-        flex: 1;
-      }
-      /* ./App fit Height */ 
-    `}</style>
-  );
-}
+import { useState } from 'react';
+import { useRouter } from 'next/router'
 
 function Titulo(props) {
   const Tag = props.tag || 'h1';
@@ -46,29 +19,19 @@ function Titulo(props) {
   )
 }
 
-// function HomePage(){
-//   return (
-//     <div>
-//       <h1>Bem-vindo, Concordante!</h1>
-//       <p>Concord - Alura Imersion</p>
-//     </div>
-//   )
-// }
-
-// export default HomePage;
-
 export default function PaginaInicial() {
-  const username = 'peas';
+  const [username, setUsername] = useState('TheSupereor');
+  const router = useRouter();
 
   return (
     <>
-      <GlobalStyle />
       <Box
         styleSheet={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          backgroundColor: Appconfig.theme.colors.primary[500],
-          backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
+          backgroundColor: Appconfig.theme.colors.primary[200],
+          backgroundImage: 'url(https://blog.1a23.com/wp-content/uploads/sites/2/2020/02/Desktop.png)',
           backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
+          boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
         }}
       >
         <Box
@@ -89,21 +52,29 @@ export default function PaginaInicial() {
           {/* Formulário */}
           <Box
             as="form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              router.push('/chat')
+            }}
             styleSheet={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
               width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
             }}
           >
-            <Titulo tag="h2">Boas vindas de volta!</Titulo>
-            <Text variant="body3" styleSheet={{ marginBottom: '32px', color: Appconfig.theme.colors.neutrals[300] }}>
+            <Titulo tag="h2">Boas vindas, Concordante!</Titulo>
+            <Text variant="body3" styleSheet={{ marginBottom: '32px', color: Appconfig.theme.colors.neutrals[200] }}>
               {Appconfig.name}
             </Text>
 
             <TextField
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value)
+              }}
               fullWidth
               textFieldColors={{
                 neutral: {
-                  textColor: Appconfig.theme.colors.neutrals[200],
+                  textColor: Appconfig.theme.colors.neutrals[777],
                   mainColor: Appconfig.theme.colors.neutrals[900],
                   mainColorHighlight: Appconfig.theme.colors.primary[500],
                   backgroundColor: Appconfig.theme.colors.neutrals[800],
@@ -117,7 +88,7 @@ export default function PaginaInicial() {
               buttonColors={{
                 contrastColor: Appconfig.theme.colors.neutrals["000"],
                 mainColor: Appconfig.theme.colors.primary[500],
-                mainColorLight: Appconfig.theme.colors.primary[400],
+                mainColorLight: Appconfig.theme.colors.primary[800],
                 mainColorStrong: Appconfig.theme.colors.primary[600],
               }}
             />
@@ -162,6 +133,30 @@ export default function PaginaInicial() {
           </Box>
           {/* Photo Area */}
         </Box>
+        <Box
+            styleSheet={{
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexDirection: {
+                xs: 'column',
+                sm: 'row',
+              },
+              width: 'auto',
+              height: '275px',
+              borderRadius: '5px', padding: '32px', margin: '16px',
+              boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
+              backgroundColor: Appconfig.theme.colors.neutrals[700],
+            }}
+          >
+            <Image
+              styleSheet={{
+                borderRadius: '50%',
+                marginBottom: '16px',
+                marginTop: '25px'
+              }}
+              src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIjQ7D9lBGLOXwahfYPF3j0q9UKiwH04kOwC_BzWP6nEQ6wHXeus5STZ8zITfybmznB_k&usqp=CAU`}
+            />
+          </Box>
       </Box>
     </>
   );
