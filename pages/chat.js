@@ -1,27 +1,50 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React, { useEffect, useState } from 'react';
 import appConfig from '../config.json';
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
+import { useRouter } from 'next/router';
+import { ButtonSendSticker } from '../src/components/ButtonSendSticker';
 
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzMwNzkyNCwiZXhwIjoxOTU4ODgzOTI0fQ.t79QkfUl16ZA0pISXFhGFzjKUHEbfrLG76ZcH76tdMM'
 const SUPABASE_URL = 'https://lphvgtqtnnnkaruveaxe.supabase.co'
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
+function RefreshOnNewMessage(addMessage) {
+  return supabaseClient
+      .from('mensagens')
+      .on('INSERT', ( res ) => {
+        addMessage(res.new)
+      })
+      .subscribe();
+}
+
 export default function ChatPage() {
   // Sua lógica vai aqui
+  const router = useRouter();
+
   const [mensagem, setMensagem] = useState('');
   const [chatList, setChatList] = useState([]);
 
+  const usuarioLogado = router.query.username;
+
   useEffect(() => {
-    const supabaseDados = supabaseClient
+    supabaseClient
       .from('mensagens')
       .select('*')
       .order('id', { ascending: false })
       .then(({ data }) => {
         setChatList(data)
       })
+
+    RefreshOnNewMessage((novaMensagem) => {
+      setChatList((listaAtual) => {
+        return [
+          novaMensagem,
+          ...listaAtual
+        ]
+      })
+    });
   }, []);
-  
 
   function deleteMessage(id){
     let novaLista = chatList;
@@ -40,7 +63,7 @@ export default function ChatPage() {
     //enviar texto
     const mensagem = {
       // id: chatList.length + 1,
-      de: 'vanessametonini',
+      de: usuarioLogado,
       texto: novaMensagem
     }
 
@@ -48,10 +71,7 @@ export default function ChatPage() {
       .from('mensagens')
       .insert([mensagem])
       .then(({ data }) => {
-        setChatList([
-          data[0],
-          ...chatList
-        ])
+        console.log(data)
       })
 
     //esvaziar caixa
@@ -133,6 +153,9 @@ export default function ChatPage() {
                 color: appConfig.theme.colors.neutrals[200],
               }}
             />
+            <ButtonSendSticker onStickerClick={(sticker) => {
+              handleNewMessage(':sticker: ' + sticker)
+            }} />
           </Box>
         </Box>
       </Box>
@@ -202,7 +225,7 @@ function MessageList(props) {
                       display: 'inline-block',
                       marginRight: '8px',
                     }}
-                    src={`https://github.com/${mensagemAtual.de}.png`}
+                    src={`https://github.com/${usuarioLogado}.png`}
                   />
                   <Text tag="strong">
                     {mensagemAtual.de}
@@ -233,6 +256,12 @@ function MessageList(props) {
                   }}
                 >X</Text>
               </Box>
+              {mensagemAtual.texto.startsWith(':sticker:')
+              ? (
+                <Image src={mensagemAtual.texto.replace(':sticker:', '')} />
+              ) : (
+                mensagemAtual.texto
+              )}
               {mensagemAtual.texto}
             </Text>
           )
