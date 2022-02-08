@@ -4,9 +4,11 @@ import appConfig from '../config.json';
 import { createClient } from '@supabase/supabase-js';
 import { useRouter } from 'next/router';
 import { ButtonSendSticker } from '../src/components/ButtonSendSticker';
+import MessageSimple from '../src/components/messageSimple';
+import ResponseMessage from '../src/components/ResponseMessage';
 
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzMwNzkyNCwiZXhwIjoxOTU4ODgzOTI0fQ.t79QkfUl16ZA0pISXFhGFzjKUHEbfrLG76ZcH76tdMM'
-const SUPABASE_URL = 'https://lphvgtqtnnnkaruveaxe.supabase.co'
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY
+const SUPABASE_URL = process.env.SUPABASE_URL
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 function RefreshOnNewMessage(addMessage) {
@@ -24,6 +26,7 @@ export default function ChatPage() {
 
   const [mensagem, setMensagem] = useState('');
   const [chatList, setChatList] = useState([]);
+  const [respondendo, setRespondendo] = useState('');
 
   const usuarioLogado = router.query.username;
 
@@ -34,6 +37,7 @@ export default function ChatPage() {
       .order('id', { ascending: false })
       .then(({ data }) => {
         setChatList(data)
+        console.log(data)
       })
 
     RefreshOnNewMessage((novaMensagem) => {
@@ -64,7 +68,8 @@ export default function ChatPage() {
     const mensagem = {
       // id: chatList.length + 1,
       de: usuarioLogado,
-      texto: novaMensagem
+      texto: novaMensagem,
+      respondendo: respondendo.id
     }
 
     supabaseClient
@@ -76,6 +81,7 @@ export default function ChatPage() {
 
     //esvaziar caixa
     setMensagem('')
+    setRespondendo('')
   }
 
   // ./Sua lógica vai aqui
@@ -119,8 +125,44 @@ export default function ChatPage() {
           }}
         >
 
-          <MessageList mensagens={chatList} deletefunc={deleteMessage} />
+          <MessageList mensagens={chatList} deletefunc={deleteMessage} usuarioLogado={usuarioLogado} setRespondendo={setRespondendo}/>
 
+          {
+            respondendo ? 
+            (
+            <Box 
+              styleSheet={{
+                backgroundColor: appConfig.theme.colors.neutrals[500],
+                borderRadius: '6px',
+                marginBottom: '10px',
+                display: 'flex',
+                justifyContent: 'space-between'
+              }}>
+              <Text styleSheet={{
+                  fontSize: '12px',
+                  paddingLeft: '10px'
+                }}>
+                Respondendo a <Text styleSheet={{
+                  color: '#'+Math.floor(Math.random()*16777215).toString(16),
+                  fontSize: '14px'
+                  }}>{respondendo.de}</Text>
+              </Text>
+              <Text 
+               onClick={() => setRespondendo('')}
+               styleSheet={{
+                borderRadius: '5px',
+                padding: '3px 6px',
+                fontSize: '10px',
+                cursor: 'pointer',
+                hover: {
+                  backgroundColor: appConfig.theme.colors.neutrals[400],
+                }
+              }}>X</Text>
+            </Box>
+            )
+            :
+            ''
+          }
           <Box
             as="form"
             styleSheet={{
@@ -182,7 +224,7 @@ function Header() {
 }
 
 function MessageList(props) {
-
+  const usuarioLogado = props.usuarioLogado
   return (
     <Box
       tag="ul"
@@ -197,73 +239,13 @@ function MessageList(props) {
     >
       {
         props.mensagens.map((mensagemAtual) => {
+          const respondendo = mensagemAtual.respondendo 
           return (
-            <Text
-              key={mensagemAtual.id}
-              tag="li"
-              styleSheet={{
-                borderRadius: '5px',
-                padding: '8px',
-                marginBottom: '12px',
-                hover: {
-                  backgroundColor: appConfig.theme.colors.neutrals[700],
-                }
-              }}
-            >
-              <Box
-                styleSheet={{
-                  justifyContent: 'space-between',
-                  display: 'flex'
-                }}
-              >
-                <Box>
-                  <Image
-                    styleSheet={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '50%',
-                      display: 'inline-block',
-                      marginRight: '8px',
-                    }}
-                    src={`https://github.com/${usuarioLogado}.png`}
-                  />
-                  <Text tag="strong">
-                    {mensagemAtual.de}
-                  </Text>
-                  <Text
-                    styleSheet={{
-                      fontSize: '10px',
-                      marginLeft: '8px',
-                      color: appConfig.theme.colors.neutrals[300],
-                    }}
-                    tag="span"
-                  >
-                    {(new Date().toLocaleDateString())}
-                  </Text>
-                </Box>
-                <Text
-                  tag='strong'
-                  onClick={() => props.deletefunc(mensagemAtual.id)}
-                  styleSheet={{
-                    borderRadius: '5px',
-                    padding: '6px',
-                    marginBottom: '12px',
-                    fontSize: '14px',
-                    cursor: 'pointer',
-                    hover: {
-                      backgroundColor: appConfig.theme.colors.neutrals[777],
-                    }
-                  }}
-                >X</Text>
-              </Box>
-              {mensagemAtual.texto.startsWith(':sticker:')
-              ? (
-                <Image src={mensagemAtual.texto.replace(':sticker:', '')} />
-              ) : (
-                mensagemAtual.texto
-              )}
-              {mensagemAtual.texto}
-            </Text>
+            !respondendo ? (
+              <MessageSimple key={mensagemAtual.id} mensagemAtual={mensagemAtual} setRespondendo={props.setRespondendo} usuarioLogado={props.usuarioLogado} deletefunc={props.deletefunc}/>
+            ) : (
+              <ResponseMessage key={mensagemAtual.id} mensagemAtual={mensagemAtual} setRespondendo={props.setRespondendo} usuarioLogado={props.usuarioLogado} deletefunc={props.deletefunc}/>
+            )
           )
         })
       }
