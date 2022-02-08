@@ -242,9 +242,9 @@ function MessageList(props) {
           const respondendo = mensagemAtual.respondendo 
           return (
             !respondendo ? (
-              <MessageSimple key={mensagemAtual.id} mensagemAtual={mensagemAtual} setRespondendo={props.setRespondendo} usuarioLogado={props.usuarioLogado} deletefunc={props.deletefunc}/>
+              <MessageSimple key={mensagemAtual.id} mensagemAtual={mensagemAtual} setRespondendo={props.setRespondendo} deletefunc={props.deletefunc}/>
             ) : (
-              <ResponseMessage key={mensagemAtual.id} mensagemAtual={mensagemAtual} setRespondendo={props.setRespondendo} usuarioLogado={props.usuarioLogado} deletefunc={props.deletefunc}/>
+              <ResponseMessage key={mensagemAtual.id} mensagemAtual={mensagemAtual} setRespondendo={props.setRespondendo} deletefunc={props.deletefunc}/>
             )
           )
         })

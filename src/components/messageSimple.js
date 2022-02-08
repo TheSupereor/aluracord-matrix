@@ -4,9 +4,9 @@ import appConfig from '../../config.json';
 
 export default function MessageSimple(props){
   const mensagemAtual = props.mensagemAtual
-  const usuarioLogado = props.usuarioLogado
   const date = mensagemAtual.created_at.split('T')
   const time = date[1].split('+')
+  const de = mensagemAtual.de
 
   console.log(props)
 
@@ -44,12 +44,12 @@ export default function MessageSimple(props){
               display: 'inline-block',
               marginRight: '8px',
             }}
-            src={`https://github.com/${usuarioLogado}.png`}
+            src={`https://github.com/${de}.png`}
           />
           <Text 
             tag="strong"
           >
-            {mensagemAtual.de}
+            {de}
           </Text>
           <Text
             styleSheet={{

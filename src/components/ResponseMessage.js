@@ -1,4 +1,4 @@
-import { Box, Text, TextField, Image, Button } from '@skynexui/components';
+import { Box, Text, Image } from '@skynexui/components';
 import react, { useEffect, useState } from 'react';
 import appConfig from '../../config.json';
 import { createClient } from '@supabase/supabase-js';
@@ -9,9 +9,9 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 export default function ResponseMessage(props) {
   const mensagemAtual = props.mensagemAtual
-  const usuarioLogado = props.usuarioLogado
   const date = mensagemAtual.created_at.split('T')
   const time = date[1].split('+')
+  const de = mensagemAtual.de;
 
   const [mensagemRespondida, setMensagemRespondida] = useState('');
 
@@ -20,14 +20,11 @@ export default function ResponseMessage(props) {
 
   }, []); 
 
-  let de;
 
   function getMessageData() {
     const id = mensagemAtual.respondendo;
     supabaseClient.from('mensagens').select('*').eq('id', id).then(({ data }) => {
       setMensagemRespondida(data[0])
-      console.log(mensagemRespondida)
-      de = data.de
     })
   }
 
@@ -119,12 +116,12 @@ export default function ResponseMessage(props) {
               display: 'inline-block',
               marginRight: '8px',
             }}
-            src={`https://github.com/${usuarioLogado}.png`}
+            src={`https://github.com/${de}.png`}
           />
           <Text
             tag="strong"
           >
-            {mensagemAtual.de}
+            {de}
           </Text>
           <Text
             styleSheet={{
