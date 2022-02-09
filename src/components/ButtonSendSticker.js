@@ -8,7 +8,7 @@ export function ButtonSendSticker(props) {
   const stickerModal = useRef();
 
   useOutsideClick(stickerModal, () => {
-    isOpen(false)
+    setOpenState(!isOpen)
   })
 
   return (

@@ -124,31 +124,41 @@ export default function ProfileNameCard({name}) {
                marginTop: '15px'
              }}
             />
-            <Text
-              styleSheet={{
-                fontWeight: '700',
-                color: appConfig.theme.colors.neutrals[100],
-                fontSize: '18px',
-                marginTop: '8px'
-              }}
-            >Sobre mim:
-            </Text>
-            <Text
+            {
+              githubData.bio && (
+                <>
+                <Text
+                 styleSheet={{
+                  fontWeight: '700',
+                  color: appConfig.theme.colors.neutrals[100],
+                  fontSize: '18px',
+                  marginTop: '8px'
+                }}
+                >Sobre mim:
+                </Text>
+                <Text
+                  styleSheet={{
+                    fontSize: '14px',
+                    color: appConfig.theme.colors.neutrals[300],
+                    padding: '4px 0'
+                  }}
+                >{githubData.bio}
+                </Text>
+                </>
+              )
+            }
+            {
+              githubData.company && (
+              <Text
               styleSheet={{
                 fontSize: '14px',
                 color: appConfig.theme.colors.neutrals[300],
                 padding: '4px 0'
               }}
-            >{githubData.bio}
-            </Text>
-            <Text
-              styleSheet={{
-                fontSize: '14px',
-                color: appConfig.theme.colors.neutrals[300],
-                padding: '4px 0'
-              }}
-            >Empresa: {githubData.company}
-            </Text>
+              >Empresa: {githubData.company}
+              </Text>
+              )
+            }
             <Text
               styleSheet={{
                 fontSize: '14px',
