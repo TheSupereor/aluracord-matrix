@@ -1,6 +1,7 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import react from 'react';
 import appConfig from '../../config.json';
+import ProfileNameCard from './ProfileNameCard';
 
 export default function MessageSimple(props){
   const mensagemAtual = props.mensagemAtual
@@ -46,11 +47,7 @@ export default function MessageSimple(props){
             }}
             src={`https://github.com/${de}.png`}
           />
-          <Text 
-            tag="strong"
-          >
-            {de}
-          </Text>
+          <ProfileNameCard name={de} />
           <Text
             styleSheet={{
               fontSize: '10px',

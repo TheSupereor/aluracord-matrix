@@ -2,6 +2,7 @@ import { Box, Text, Image } from '@skynexui/components';
 import react, { useEffect, useState } from 'react';
 import appConfig from '../../config.json';
 import { createClient } from '@supabase/supabase-js';
+import ProfileNameCard from './ProfileNameCard';
 
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY
 const SUPABASE_URL = process.env.SUPABASE_URL
@@ -118,11 +119,7 @@ export default function ResponseMessage(props) {
             }}
             src={`https://github.com/${de}.png`}
           />
-          <Text
-            tag="strong"
-          >
-            {de}
-          </Text>
+          <ProfileNameCard name={de} />
           <Text
             styleSheet={{
               fontSize: '10px',

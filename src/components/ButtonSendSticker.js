@@ -1,9 +1,15 @@
-import React from 'react';
+import React, {useState, useRef} from 'react';
 import { Box, Button, Text, Image } from '@skynexui/components';
 import appConfig from '../../config.json';
+import useOutsideClick from '../Hooks/ClickOutsideElement';
 
 export function ButtonSendSticker(props) {
-  const [isOpen, setOpenState] = React.useState('');
+  const [isOpen, setOpenState] = useState('');
+  const stickerModal = useRef();
+
+  useOutsideClick(stickerModal, () => {
+    isOpen(false)
+  })
 
   return (
     <Box
@@ -33,6 +39,7 @@ export function ButtonSendSticker(props) {
         onClick={() => setOpenState(!isOpen)}
       />
       {isOpen && (
+        <div ref={stickerModal}>
         <Box
           styleSheet={{
             display: 'flex',
@@ -97,6 +104,7 @@ export function ButtonSendSticker(props) {
             ))}
           </Box>
         </Box>
+        </div>
       )}
     </Box>
   )
